@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MedDrive MVP</title>
+</head>
+<body>
+    <h1>MedDrive MVP</h1>
+    <p>Emergency Ambulance Request</p>
+
+    <!-- Emergency Request Form -->
+    <form id="emergency-form">
+        <label for="userName">Name:</label>
+        <input type="text" id="userName" name="userName" required><br><br>
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" required><br><br>
+
+        <label for="location">Current Location:</label>
+        <input type="text" id="location" name="location" required><br><br>
+
+        <label for="description">Emergency Description (optional):</label>
+        <textarea id="description" name="description"></textarea><br><br>
+
+        <button type="submit">Request Ambulance</button>
+    </form>
+
+    <div id="confirmation" style="margin-top:20px;"></div>
+
+    <script>
+        const form = document.getElementById('emergency-form');
+        const confirmation = document.getElementById('confirmation');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userName = document.getElementById('userName').value;
+            const phone = document.getElementById('phone').value;
+            const location = document.getElementById('location').value;
+            const description = document.getElementById('description').value;
+
+            // Simple confirmation message
+            confirmation.innerHTML = `<p>Request Received!<br>Name: ${userName}<br>Phone: ${phone}<br>Location: ${location}<br>Description: ${description}</p>`;
+            
+            // Reset form
+            form.reset();
+        });
+    </script>
+</body>
+</html>
