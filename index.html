@@ -8,28 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        
-        // Firebase configuration - Replace with your own config
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Make Firebase available globally
-        window.firebaseApp = { db, addDoc, collection, serverTimestamp };
-    </script>
+    <!-- Firebase SDK (CDN - works without build) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script>
 
     <style>
         :root {
@@ -764,7 +746,21 @@
         </div>
     </footer>
 
-    <script type="module">
+    <script>
+        // Firebase configuration - Replace with your own config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         const form = document.getElementById('emergency-form');
         const confirmation = document.getElementById('confirmation');
         const submitBtn = document.getElementById('submitBtn');
@@ -781,15 +777,15 @@
             submitBtn.textContent = '⏳ Sending...';
 
             try {
-                if (window.firebaseApp) {
-                    const { db, addDoc, collection, serverTimestamp } = window.firebaseApp;
-                    await addDoc(collection(db, "emergency_requests"), {
-                        userName, phone, location, description: description || "",
-                        status: "pending",
-                        createdAt: serverTimestamp(),
-                        requestId: "REQ-" + Date.now()
-                    });
-                }
+                await db.collection("emergency_requests").add({
+                    userName: userName,
+                    phone: phone,
+                    location: location,
+                    description: description || "",
+                    status: "pending",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    requestId: "REQ-" + Date.now()
+                });
 
                 confirmation.innerHTML = `
                     <strong>✅ Request Received!</strong><br><br>
